@@ -21,7 +21,19 @@ fn main() -> ! {
     let peripherals = Peripherals::take().unwrap();
     let mut pins = wio::Pins::new(peripherals.PORT);
 
-    // TODO: ボタン1を押している間、LEDが点灯するコードを書く
+    // set user led to output
+    let mut led = pins.user_led.into_push_pull_output(&mut pins.port);
 
-    loop {}
+    // set button 1 to input
+    let button1 = pins.button1.into_floating_input(&mut pins.port);
+
+    loop {
+        if button1.is_low().unwrap() {
+            // turn on led if button is pressed
+            led.set_high().unwrap();
+        } else {
+            // turn off led if button is not pressed
+            led.set_low().unwrap();
+        }
+    }
 }
